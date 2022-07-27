@@ -1,0 +1,111 @@
+/
+     * @dev Hook that is called before any transfer of tokens. This includes
+     * minting and burning.
+     *
+     * Calling conditions:
+     *
+     * - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+     * will be transferred to `to`.
+     * - when `from` is zero, `amount` tokens will be minted for `to`.
+     * - when `to` is zero, `amount` of ``from``'s tokens will be burned.
+     * - `from` and `to` are never both zero.
+     *
+     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+     */
+    function _beforeTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual {}
+
+    /
+     * @dev Hook that is called after any transfer of tokens. This includes
+     * minting and burning.
+     *
+     * Calling conditions:
+     *
+     * - when from and to are both non-zero, amount of ``from``'s tokens
+     * has been transferred to to.
+     * - when from is zero, amount tokens have been minted for to.
+     * - when to is zero, amount of ``from``'s tokens have been burned.
+     * - from and to are never both zero.
+     *
+     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+     */
+    function _afterTokenTransfer(
+        address from,
+        address to,
+        uint256 amount
+    ) internal virtual {}
+}
+
+// OpenZeppelin Contracts (last updated v4.5.0) (token/ERC20/extensions/ERC20Burnable.sol)
+
+pragma solidity ^0.8.0;
+
+
+
+/
+ * @dev Extension of {ERC20} that allows token holders to destroy both their own
+ * tokens and those that they have an allowance for, in a way that can be
+ * recognized off-chain (via event analysis).
+ */
+abstract contract ERC20Burnable is Context, ERC20 {
+    /
+     * @dev Destroys amount tokens from the caller.
+     *
+     * See {ERC20-_burn}.
+     */
+    function burn(uint256 amount) external {
+        _burn(_msgSender(), amount);
+    }
+
+    /
+     * @dev Destroys `amount` tokens from `account`, deducting from the caller's
+     * allowance.
+     *
+     * See {ERC20-_burn} and {ERC20-allowance}.
+     *
+     * Requirements:
+     *
+     * - the caller must have allowance for ``accounts``'s tokens of at least
+     * `amount`.
+     */
+    function burnFrom(address account, uint256 amount) external {
+        _spendAllowance(account, _msgSender(), amount);
+        _burn(account, amount);
+    }
+}
+// File: contracts/EnergyEmpire.sol
+
+
+pragma solidity ^0.8.12;
+
+
+
+contract E2COIN is ERC20, ERC20Burnable {
+
+
+
+    constructor() ERC20("Energy Empire", "E2COIN") {
+         isExcluded[owner()] = true;
+        _mint(msg.sender, 2000000000 * 10  decimals());
+    }
+
+    /
+    function to change tokentransferlock state
+    owner only
+    /
+
+    function transferWithLock (bool value) external onlyOwner {
+        isTransferEnabled = value;
+    }
+
+    /
+    function to exclude address from tokentransferlock state
+    /
+    function ExcludeAddress (address add, bool value) external onlyOwner {
+        isExcluded[add] = value;
+    }
+    
+}
